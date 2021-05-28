@@ -1,0 +1,23 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.1.2'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10"
+    }
+}
+
+plugins {
+    id 'version-plugin'
+}
+
+versions {
+    inputFile = "versions.gradle"
+    outputFile = "../BaseUtils/version-plugin/src/main/groovy/Versions.groovy"
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

@@ -1,0 +1,90 @@
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'maven-publish'
+}
+
+// 读取 git 的提交数量作为版本号
+static def gitVersionCode() {
+    def cmd = 'git rev-list HEAD --first-parent --count'
+    (cmd.execute().text.trim() ?: "1").toInteger()
+}
+// 读取 git 的 commit tag 作为应用的版本名，如果后面
+static def gitVersionTag() {
+    def cmd = 'git describe --tags'
+    def tag = cmd.execute().text.trim().split("-")
+    if (tag.length > 1) {
+        tag.first() + "-develop"
+    } else {
+        tag.first()
+    }
+}
+
+android {
+    compileSdkVersion Versions.compileSdk
+    buildToolsVersion Versions.buildTool
+
+    defaultConfig {
+        minSdkVersion Versions.minSdk
+        targetSdkVersion Versions.targetSdk
+        versionCode gitVersionCode()
+        versionName gitVersionTag()
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+afterEvaluate {
+    android.libraryVariants.all { variant ->
+        File outputFile = variant.outputs.first().outputFile
+        tasks.named("assemble${variant.name.capitalize()}").configure {
+            doLast {
+                copy {
+                    from outputFile
+                    into "../app/libs"
+                    rename outputFile.name, "jsbridge.aar"
+                }
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation Deps.coreKtx
+    implementation Deps.tencentX5
+
+    testImplementation Deps.junit
+    androidTestImplementation Deps.extJunit
+    androidTestImplementation Deps.espresso
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            // Creates a Maven publication called "release".
+            release(MavenPublication) {
+                // Applies the component for the release build variant.
+                from components.release
+
+                groupId = 'com.zhangls'
+                artifactId = 'jsbridge'
+                version = gitVersionTag()
+            }
+        }
+    }
+}
