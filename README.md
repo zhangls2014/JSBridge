@@ -26,3 +26,22 @@
 #### X5BridgeWebView
 
 X5BridgeWebView 基于 Tbs (腾讯浏览服务) X5 内核，如需使用需要引入 Tbs 的依赖。
+
+#### 集成方法
+
+```
+[![](https://jitpack.io/v/zhangls2014/JSBridge.svg)](https://jitpack.io/#zhangls2014/JSBridge)
+```
+
+```groovy
+allprojects {
+  repositories {
+    maven { url 'https://jitpack.io' }
+  }
+}
+
+dependencies {
+  implementation 'com.github.zhangls2014:JSBridge:Tag'
+}
+```
+
