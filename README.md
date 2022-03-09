@@ -29,9 +29,7 @@ X5BridgeWebView 基于 Tbs (腾讯浏览服务) X5 内核，如需使用需要�
 
 #### 集成方法
 
-```
 [![](https://jitpack.io/v/zhangls2014/JSBridge.svg)](https://jitpack.io/#zhangls2014/JSBridge)
-```
 
 ```groovy
 allprojects {
