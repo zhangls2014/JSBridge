@@ -9,5 +9,3 @@ dependencyResolutionManagement {
 rootProject.name = "JSBridge"
 include ':app'
 include ':jsbridge'
-
-includeBuild '../BaseUtils/version-plugin'

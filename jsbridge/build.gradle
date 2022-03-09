@@ -21,12 +21,12 @@ static def gitVersionTag() {
 }
 
 android {
-    compileSdkVersion Versions.compileSdk
-    buildToolsVersion Versions.buildTool
+    compileSdkVersion 31
+    buildToolsVersion '32.0.0'
 
     defaultConfig {
-        minSdkVersion Versions.minSdk
-        targetSdkVersion Versions.targetSdk
+        minSdkVersion 23
+        targetSdkVersion 31
         versionCode gitVersionCode()
         versionName gitVersionTag()
 
@@ -65,12 +65,8 @@ afterEvaluate {
 }
 
 dependencies {
-    implementation Deps.coreKtx
-    implementation Deps.tencentX5
-
-    testImplementation Deps.junit
-    androidTestImplementation Deps.extJunit
-    androidTestImplementation Deps.espresso
+    implementation 'androidx.core:core-ktx:1.6.0'
+    implementation 'com.tencent.tbs:tbssdk:44153'
 }
 
 afterEvaluate {
