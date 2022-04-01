@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import com.tencent.smtt.sdk.WebView
+import com.tencent.smtt.sdk.WebViewClient
 import com.zhangls.jsbridge.Bridge
 import com.zhangls.jsbridge.handler.BridgeHandler
 import com.zhangls.jsbridge.handler.CallbackFunction
@@ -39,16 +40,25 @@ class X5BridgeWebView : WebView {
         @Suppress("DEPRECATION")
         @SuppressLint("SetJavaScriptEnabled")
         settings.javaScriptEnabled = true
-        webViewClient = X5BridgeWebViewClient().also {
+        super.setWebViewClient(X5BridgeWebViewClient().also {
             it.setBridgeWebViewClientListener(listener)
-        }
+        })
         bridge.loadUrlCallback = { loadUrl(it) }
     }
 
-    fun setWebViewClient(client: X5BridgeWebViewClient) {
-        webViewClient = client.also {
+    fun setJSWebViewClient(client: X5BridgeWebViewClient) {
+        super.setWebViewClient(client.also {
             it.setBridgeWebViewClientListener(listener)
-        }
+        })
+    }
+
+    @Deprecated(
+        message = "JSBridge 已经实现了该方法，请调用 setJSWebViewClient 方法，否则会出现异常",
+        replaceWith = ReplaceWith("setJSWebViewClient(client)"),
+        level = DeprecationLevel.ERROR
+    )
+    override fun setWebViewClient(client: WebViewClient?) {
+        super.setWebViewClient(client)
     }
 
     fun registerHandler(handlerName: String, handler: BridgeHandler) {

@@ -9,8 +9,10 @@ import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.tencent.smtt.export.external.TbsCoreSettings
 import com.tencent.smtt.sdk.QbSdk
+import com.tencent.smtt.sdk.WebView
 import com.zhangls.jsbridge.original.BridgeWebView
 import com.zhangls.jsbridge.tencent.X5BridgeWebView
+import com.zhangls.jsbridge.tencent.X5BridgeWebViewClient
 
 
 /**
@@ -35,7 +37,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        initWebView()
+        initX5SDK()
     }
 
     private fun initX5SDK() {
@@ -64,7 +66,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initWebView() {
-        originalWebView.run {
+        x5WebView.run {
             setContentView(this)
             with(settings) {
                 // 设置自适应屏幕，两者合用
@@ -95,6 +97,24 @@ class MainActivity : AppCompatActivity() {
 
 //            loadUrl("https://liulanmi.com/labs/core.html")
 //            loadUrl("https://debugtbs.qq.com")
+
+            loadUrl("file:///android_asset/demo.html")
+
+            val client = object : X5BridgeWebViewClient() {
+                override fun onPageFinished(view: WebView, url: String) {
+                    super.onPageFinished(view, url)
+                    Log.d(this@MainActivity::class.simpleName, "onPageFinished: $url")
+                }
+            }
+            // 优化 WebViewClient 方法的调用， webViewClient = client 将报错，必须使用 setJSWebViewClient 方法
+            setJSWebViewClient(client)
+
+            callHandler("functionInJs", "hahahahah 123") {
+                Log.d(this@MainActivity::class.simpleName, "functionInJs: $it")
+            }
+            registerHandler("submitFromWeb") { data, callback ->
+                Log.d(this@MainActivity::class.simpleName, "submitFromWeb: $data")
+            }
         }
     }
 }
