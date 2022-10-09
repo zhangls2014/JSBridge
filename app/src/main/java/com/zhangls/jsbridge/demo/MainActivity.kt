@@ -1,14 +1,20 @@
 package com.zhangls.jsbridge.demo
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
 import android.webkit.WebSettings
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
+import com.hjq.permissions.Permission
+import com.hjq.permissions.XXPermissions
 import com.tencent.smtt.export.external.TbsCoreSettings
+import com.tencent.smtt.export.external.interfaces.PermissionRequest
+import com.tencent.smtt.export.external.interfaces.WebResourceRequest
 import com.tencent.smtt.sdk.QbSdk
+import com.tencent.smtt.sdk.WebChromeClient
 import com.tencent.smtt.sdk.WebView
 import com.zhangls.jsbridge.original.BridgeWebView
 import com.zhangls.jsbridge.tencent.X5BridgeWebView
@@ -57,10 +63,8 @@ class MainActivity : AppCompatActivity() {
                     this@MainActivity::class.simpleName,
                     "onViewInitFinished = $isX5, x5Version = ${QbSdk.getTbsVersion(this@MainActivity)}"
                 )
-                if (isX5) {
-                    initWebView()
-                }
-                x5WebView.settingsExtension.setDisplayCutoutEnable(true)
+                initWebView()
+                x5WebView.settingsExtension?.setDisplayCutoutEnable(true)
             }
         })
     }
@@ -93,28 +97,91 @@ class MainActivity : AppCompatActivity() {
                 // 设置编码格式
                 defaultTextEncodingName = "utf-8"
             }
-            clearCache(true)
 
-//            loadUrl("https://liulanmi.com/labs/core.html")
+            loadUrl("https://www.baidu.com")
+//            loadUrl("file:///android_asset/demo.html")
 //            loadUrl("https://debugtbs.qq.com")
+//            loadUrl("https://vcs.smallaide.com/video.html")
 
-            loadUrl("file:///android_asset/demo.html")
-
-            val client = object : X5BridgeWebViewClient() {
-                override fun onPageFinished(view: WebView, url: String) {
-                    super.onPageFinished(view, url)
-                    Log.d(this@MainActivity::class.simpleName, "onPageFinished: $url")
-                }
-            }
-            // 优化 WebViewClient 方法的调用， webViewClient = client 将报错，必须使用 setJSWebViewClient 方法
-            setJSWebViewClient(client)
-
-            callHandler("functionInJs", "hahahahah 123") {
-                Log.d(this@MainActivity::class.simpleName, "functionInJs: $it")
-            }
-            registerHandler("submitFromWeb") { data, callback ->
+//            callHandler("functionInJs", "hahahahah 123") {
+//                Log.d(this@MainActivity::class.simpleName, "functionInJs: $it")
+//            }
+            registerHandler("aaa") { data, callback ->
                 Log.d(this@MainActivity::class.simpleName, "submitFromWeb: $data")
             }
+
+            callHandler("initTransactionInfo", "hahahah") {
+                Log.d(this@MainActivity::class.simpleName, "initWebView() called")
+            }
+
+            webChromeClient = object : WebChromeClient() {
+                override fun onPermissionRequest(request: PermissionRequest?) {
+                    request?.let {
+                        val permissions = arrayListOf<String>()
+                        if (it.resources.contains(PermissionRequest.RESOURCE_AUDIO_CAPTURE)) {
+                            permissions.add(Permission.RECORD_AUDIO)
+                        }
+                        if (it.resources.contains(PermissionRequest.RESOURCE_VIDEO_CAPTURE)) {
+                            permissions.add(Permission.CAMERA)
+                        }
+                        // 权限申请框架，需要手动调用申请权限获取系统对应用的授权，然后授予 WebView
+                        XXPermissions.with(this@MainActivity)
+                            .permission(permissions)
+                            .request { _, all ->
+                                if (all) {
+                                    Log.d(this@MainActivity::class.simpleName, "onPermissionRequest: granted")
+                                    request.grant(it.resources)
+                                } else {
+                                    Log.d(this@MainActivity::class.simpleName, "onPermissionRequest: denied")
+                                }
+                            }
+
+                        it.resources.forEach { resource ->
+                            Log.d(this@MainActivity::class.simpleName, "onPermissionRequest: $resource")
+                        }
+                    }
+                }
+            }
+
+            setJSWebViewClient(object : X5BridgeWebViewClient() {
+                override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
+                    val result = super.shouldOverrideUrlLoading(view, request)
+                    Log.d(this@MainActivity::class.simpleName, "shouldOverrideUrlLoading: url = ${request.url}")
+                    return result
+                }
+
+                override fun onPageStarted(view: WebView, url: String, favicon: Bitmap?) {
+                    super.onPageStarted(view, url, favicon)
+                    Log.d(this@MainActivity::class.simpleName, "onPageStarted: url = $url")
+                }
+
+                override fun onPageFinished(view: WebView, url: String) {
+                    super.onPageFinished(view, url)
+                    Log.d(this@MainActivity::class.simpleName, "onPageFinished: url = $url")
+                    injectJS(view)
+                }
+            })
         }
+    }
+
+    override fun onBackPressed() {
+        if (x5WebView.canGoBack()) {
+            x5WebView.goBack()
+        } else {
+            super.onBackPressed()
+        }
+    }
+
+    private fun injectJS(view: WebView) {
+        val js1 = "javascript:var newscript = document.createElement(\"script\");" +
+                "newscript.src=\"https://vcs.smallaide.com/appTest/1/js/clientWebrcs.js\";" +
+                "newscript.async = false;" +
+                "document.body.appendChild(newscript);"
+        val js2 = "javascript:var bscript = document.createElement(\"script\");" +
+                "bscript.src=\"https://vcs.smallaide.com/appTest/1/js/hello-world.js\";" +
+                "bscript.async = false;" +
+                "document.body.appendChild(bscript);"
+        view.loadUrl(js1)
+        view.loadUrl(js2)
     }
 }
