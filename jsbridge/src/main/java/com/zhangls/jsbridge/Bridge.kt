@@ -5,15 +5,14 @@ import android.os.Looper
 import android.os.SystemClock
 import com.zhangls.jsbridge.handler.BridgeHandler
 import com.zhangls.jsbridge.handler.CallbackFunction
-import java.util.*
 
 
 /**
  * @author zhangls
  */
 internal class Bridge {
-    private var responseCallbacks: MutableMap<String, CallbackFunction> = HashMap<String, CallbackFunction>()
-    private var messageHandlers: MutableMap<String, BridgeHandler> = HashMap<String, BridgeHandler>()
+    private val responseCallbacks: MutableMap<String, CallbackFunction> = HashMap<String, CallbackFunction>()
+    private val messageHandlers: MutableMap<String, BridgeHandler> = HashMap<String, BridgeHandler>()
     private var startupMessage: MutableList<Message>? = ArrayList()
     private var uniqueId: Long = 0
 
