@@ -9,7 +9,7 @@
 1. Android 调用 JS 方法
 
    ```kotlin
-   BridgeWebView.callHandler("handlerName", "data") {
+   BridgeWebView.callHandler("functionName", "data") {
      // 回调内容
    }
    ```
@@ -17,15 +17,18 @@
 2. 注册 JS 调用 Android 方法
 
    ```kotlin
-   BridgeWebView.registerHandler("handlerName") { "data", callback ->
+   BridgeWebView.registerHandler("functionName") { "data", callback ->
+     // 回调内容
    }
    ```
-
-
 
 #### X5BridgeWebView
 
 X5BridgeWebView 基于 Tbs (腾讯浏览服务) X5 内核，如需使用需要引入 Tbs 的依赖。
+
+#### WebViewClient
+
+`setWebViewClient` 方法被标记过时，需要使用 `setJSWebViewClient` 替代
 
 #### 集成方法
 

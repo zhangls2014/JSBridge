@@ -103,15 +103,11 @@ class MainActivity : AppCompatActivity() {
 //            loadUrl("https://debugtbs.qq.com")
 //            loadUrl("https://vcs.smallaide.com/video.html")
 
-//            callHandler("functionInJs", "hahahahah 123") {
-//                Log.d(this@MainActivity::class.simpleName, "functionInJs: $it")
-//            }
+            callHandler("functionInJs", "hahahahah 123") {
+                Log.d(this@MainActivity::class.simpleName, "functionInJs: $it")
+            }
             registerHandler("aaa") { data, callback ->
                 Log.d(this@MainActivity::class.simpleName, "submitFromWeb: $data")
-            }
-
-            callHandler("initTransactionInfo", "hahahah") {
-                Log.d(this@MainActivity::class.simpleName, "initWebView() called")
             }
 
             webChromeClient = object : WebChromeClient() {
@@ -158,7 +154,6 @@ class MainActivity : AppCompatActivity() {
                 override fun onPageFinished(view: WebView, url: String) {
                     super.onPageFinished(view, url)
                     Log.d(this@MainActivity::class.simpleName, "onPageFinished: url = $url")
-                    injectJS(view)
                 }
             })
         }
@@ -172,16 +167,4 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun injectJS(view: WebView) {
-        val js1 = "javascript:var newscript = document.createElement(\"script\");" +
-                "newscript.src=\"https://vcs.smallaide.com/appTest/1/js/clientWebrcs.js\";" +
-                "newscript.async = false;" +
-                "document.body.appendChild(newscript);"
-        val js2 = "javascript:var bscript = document.createElement(\"script\");" +
-                "bscript.src=\"https://vcs.smallaide.com/appTest/1/js/hello-world.js\";" +
-                "bscript.async = false;" +
-                "document.body.appendChild(bscript);"
-        view.loadUrl(js1)
-        view.loadUrl(js2)
-    }
 }
