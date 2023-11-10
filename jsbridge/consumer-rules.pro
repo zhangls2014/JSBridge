@@ -6,3 +6,9 @@
 
 -keep public class com.zhangls.jsbridge.handler.BridgeHandler { *; }
 -keep public class com.zhangls.jsbridge.handler.CallbackFunction { *; }
+
+# Tencent X5
+-dontwarn dalvik.**
+-dontwarn com.tencent.smtt.**
+-keep class com.tencent.smtt.** { *; }
+-keep class com.tencent.tbs.** { *; }
