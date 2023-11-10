@@ -40,6 +40,8 @@ materialDesign = { group = "com.google.android.material", name = "material", ver
 constraintLayout = { group = "androidx.constraintlayout", name = "constraintlayout", version = "2.1.4" }
 # coreKtx
 coreKtx = { group = "androidx.core", name = "core-ktx", version = "1.10.1" }
+# annotations
+annotations = { group = "androidx.annotation", name = "annotation", version = "1.6.0" }
 
 # coroutinesAndroid
 coroutinesAndroid = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version = "1.7.3" }

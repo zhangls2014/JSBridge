@@ -95,6 +95,6 @@ dependencies {
     androidTestImplementation(libs.extJunit)
     androidTestImplementation(libs.espresso)
 
-    implementation(libs.coreKtx)
+    implementation(libs.annotations)
     implementation(libs.tencentX5)
 }
