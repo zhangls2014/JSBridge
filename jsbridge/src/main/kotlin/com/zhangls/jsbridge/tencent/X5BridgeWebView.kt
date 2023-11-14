@@ -65,7 +65,7 @@ class X5BridgeWebView : WebView {
         bridge.registerHandler(handlerName, handler)
     }
 
-    fun callHandler(handlerName: String, data: String? = null, callback: CallbackFunction? = null) {
+    fun callHandler(handlerName: String, data: String? = null, callback: CallbackFunction? = CallbackFunction { }) {
         bridge.doSend(handlerName, data, callback)
     }
 
