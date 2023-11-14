@@ -1,6 +1,6 @@
 ### JSBridge
 
-由于项目中使用的 [JSBridge](https://github.com/hjhrq1991/JsBridge) 库长期不维护，出现了未解决的 bug，所以决定使用使用 kotlin 重写一次。
+由于项目中使用的 [JSBridge](https://github.com/hjhrq1991/JsBridge) 库长期不维护，出现了未解决的 bug，所以决定使用 kotlin 重写一次。
 
 
 
