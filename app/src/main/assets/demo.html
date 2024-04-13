@@ -1,6 +1,7 @@
 <html>
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="content-type">
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' name='viewport'>
     <title>
         js调用java
     </title>
@@ -8,108 +9,69 @@
 
 <body>
 <p>
-    <xmp id="show">
-    </xmp>
+    <xmp id="show"></xmp>
 </p>
 <p>
-    <xmp id="init">
-    </xmp>
+    <input id="text" type="text" placeholder="发送给 Native 的消息内容"/>
 </p>
 <p>
-    <input id="text1" type="text" value="用户名(username)"/>
-</p>
-<p>
-    <input id="text2" type="text" value="password"/>
-</p>
-<p>
-    <input id="enter" onclick="testClick();" type="button" value="发消息给Native"
-    />
-</p>
-<p>
-    <input id="enter1" onclick="testClick1();" type="button" value="调用Native方法"
-    />
-</p>
-<p>
-    <input id="enter2" onclick="testDiv();" type="button" value="显示html"/>
-</p>
-<p>
-    <input type="file" value="打开文件"/>
+    <input id="enter" onclick="testClick();" type="button" value="发消息给Native" />
 </p>
 </body>
+
 <script>
-        function testDiv() {
-            document.getElementById("show").innerHTML = document.getElementsByTagName("html")[0].innerHTML;
-        }
+    function testClick() {
+        var str = document.getElementById("text").value;
 
-        function testClick() {
-            var str1 = document.getElementById("text1").value;
-            var str2 = document.getElementById("text2").value;
-
-            //send message to native
-            var data = {id: 1, content: "这是一个图片 <img src=\"a.png\"/> test\r\nhahaha"};
-            window.WebViewJavascriptBridge.send(
-                data
-                , function(responseData) {
-                    document.getElementById("show").innerHTML = "repsonseData from java, data = " + responseData
-                }
-            );
-
-        }
-
-        function testClick1() {
-            var str1 = document.getElementById("text1").value;
-            var str2 = document.getElementById("text2").value;
-
-            //call native method
-            window.WebViewJavascriptBridge.callHandler(
-                'submitFromWeb'
-                , {'param': '中文测试'}
-                , function(responseData) {
-                    document.getElementById("show").innerHTML = "send get responseData from java, data = " + responseData
-                }
-            );
-        }
-
-        function bridgeLog(logContent) {
-            document.getElementById("show").innerHTML = logContent;
-        }
-
-        function connectWebViewJavascriptBridge(callback) {
-            if (window.WebViewJavascriptBridge) {
-                callback(WebViewJavascriptBridge)
-            } else {
-                document.addEventListener(
-                    'WebViewJavascriptBridgeReady'
-                    , function() {
-                        callback(WebViewJavascriptBridge)
-                    },
-                    false
-                );
+        //call native method
+        window.WebViewJavascriptBridge.callHandler(
+            'submitFromWeb'
+            , {'param': str}
+            , function(responseData) {
+                document.getElementById("show").innerHTML = "send get responseData from java, data = " + responseData
             }
+        );
+    }
+
+    function bridgeLog(logContent) {
+        document.getElementById("show").innerHTML = logContent;
+    }
+
+    function connectWebViewJavascriptBridge(callback) {
+        if (window.WebViewJavascriptBridge) {
+            callback(WebViewJavascriptBridge)
+        } else {
+            document.addEventListener(
+                'WebViewJavascriptBridgeReady'
+                , function() {
+                    callback(WebViewJavascriptBridge)
+                },
+                false
+            );
         }
+    }
 
-        connectWebViewJavascriptBridge(function(bridge) {
-            bridge.init(function(message, responseCallback) {
-                console.log('JS got a message', message);
-                var data = {
-                    'Javascript Responds': '测试中文!'
-                };
+    connectWebViewJavascriptBridge(function(bridge) {
+        bridge.init(function(message, responseCallback) {
+            console.log('JS got a message', message);
+            var data = {
+                'Javascript Responds': '测试中文!'
+            };
 
-                if (responseCallback) {
-                    console.log('JS responding with', data);
-                    responseCallback(data);
-                }
-            });
+            if (responseCallback) {
+                console.log('JS responding with', data);
+                responseCallback(data);
+            }
+        });
 
-            bridge.registerHandler("functionInJs", function(data, responseCallback) {
-                document.getElementById("show").innerHTML = ("data from Java: = " + data);
-                if (responseCallback) {
-                    var responseData = "Javascript Says Right back aka!";
-                    responseCallback(responseData);
-                }
-            });
-        })
-
+        bridge.registerHandler("functionInJs", function(data, responseCallback) {
+            document.getElementById("show").innerHTML = ("data from Java: = " + data);
+            if (responseCallback) {
+                var responseData = "Javascript Says Right back aka!";
+                responseCallback(responseData);
+            }
+        });
+    })
 
 </script>
 

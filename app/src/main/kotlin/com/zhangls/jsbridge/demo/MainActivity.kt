@@ -5,13 +5,13 @@ import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
 import android.webkit.WebSettings
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.button.MaterialButton
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
 import com.tencent.smtt.export.external.TbsCoreSettings
 import com.tencent.smtt.export.external.interfaces.PermissionRequest
-import com.tencent.smtt.export.external.interfaces.WebResourceRequest
 import com.tencent.smtt.sdk.QbSdk
 import com.tencent.smtt.sdk.WebChromeClient
 import com.tencent.smtt.sdk.WebView
@@ -58,15 +58,14 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.app_activity_main)
         val web = findViewById<X5BridgeWebView>(R.id.webView)
 
-        findViewById<MaterialButton>(R.id.mbClearCache).setOnClickListener {
-            web.clearCache(true)
+        findViewById<MaterialButton>(R.id.mbSendMessage).setOnClickListener {
+            web.callHandler("functionInJs", "random ==> ${(0..100).random()}") {
+                Log.d(this@MainActivity::class.simpleName, "functionInJs: $it")
+            }
         }
 
         findViewById<MaterialButton>(R.id.mbReloading).setOnClickListener {
             web.reload()
-            web.callHandler("functionInJs", "hahahahah 123") {
-                Log.d(this@MainActivity::class.simpleName, "functionInJs: $it")
-            }
         }
 
         web.run {
@@ -103,11 +102,9 @@ class MainActivity : AppCompatActivity() {
             loadUrl("file:///android_asset/demo.html")
 //            loadUrl("https://debugtbs.qq.com")
 
-            callHandler("functionInJs", "hahahahah 123") {
-                Log.d(this@MainActivity::class.simpleName, "functionInJs: $it")
-            }
-            registerHandler("aaa") { data, _ ->
+            registerHandler("submitFromWeb") { data, _ ->
                 Log.d(this@MainActivity::class.simpleName, "submitFromWeb: $data")
+                Toast.makeText(this@MainActivity, data, Toast.LENGTH_SHORT).show()
             }
 
             webChromeClient = object : WebChromeClient() {
@@ -140,12 +137,6 @@ class MainActivity : AppCompatActivity() {
             }
 
             setJSWebViewClient(object : X5BridgeWebViewClient() {
-                override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
-                    val result = super.shouldOverrideUrlLoading(view, request)
-                    Log.d(this@MainActivity::class.simpleName, "shouldOverrideUrlLoading: url = ${request.url}")
-                    return result
-                }
-
                 override fun onPageStarted(view: WebView, url: String, favicon: Bitmap?) {
                     super.onPageStarted(view, url, favicon)
                     Log.d(this@MainActivity::class.simpleName, "onPageStarted: url = $url")

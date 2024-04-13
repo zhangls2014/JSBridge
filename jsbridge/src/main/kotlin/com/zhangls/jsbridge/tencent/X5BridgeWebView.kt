@@ -3,6 +3,7 @@ package com.zhangls.jsbridge.tencent
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
+import androidx.annotation.MainThread
 import com.tencent.smtt.sdk.WebView
 import com.tencent.smtt.sdk.WebViewClient
 import com.zhangls.jsbridge.Bridge
@@ -61,10 +62,12 @@ class X5BridgeWebView : WebView {
         super.setWebViewClient(client)
     }
 
+    @MainThread
     fun registerHandler(handlerName: String, handler: BridgeHandler) {
         bridge.registerHandler(handlerName, handler)
     }
 
+    @MainThread
     fun callHandler(handlerName: String, data: String? = null, callback: CallbackFunction? = CallbackFunction { }) {
         bridge.doSend(handlerName, data, callback)
     }
