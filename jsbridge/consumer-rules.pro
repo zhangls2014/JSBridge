@@ -20,8 +20,6 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keep public class com.zhangls.jsbridge.** { *; }
-
 # Tencent X5
 -dontwarn dalvik.**
 -dontwarn com.tencent.smtt.**
