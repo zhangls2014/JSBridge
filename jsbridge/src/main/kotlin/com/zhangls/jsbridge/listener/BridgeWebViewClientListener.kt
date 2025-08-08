@@ -5,10 +5,10 @@ package com.zhangls.jsbridge.listener
  */
 internal interface BridgeWebViewClientListener {
 
-    fun handleReturnData(url: String)
+  fun handleReturnData(url: String)
 
-    fun flushMessageQueue()
+  fun flushMessageQueue()
 
-    fun dispatchMessages()
+  fun dispatchMessages()
 
 }

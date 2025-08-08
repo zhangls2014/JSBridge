@@ -21,9 +21,3 @@
 #-renamesourcefileattribute SourceFile
 
 -keep public class com.zhangls.jsbridge.** { *; }
-
-# Tencent X5
--dontwarn dalvik.**
--dontwarn com.tencent.smtt.**
--keep class com.tencent.smtt.** { *; }
--keep class com.tencent.tbs.** { *; }
